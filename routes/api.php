@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Product\ProductController;
+use App\Http\Controllers\Sales\OrderController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -23,4 +24,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::post('products', [ProductController::class, 'store']);
     Route::post('products/{product}', [ProductController::class, 'update']);
+
+    Route::post('place-order', [OrderController::class, 'placeOrder']);
+    Route::get('order-history', [OrderController::class, 'viewOrderHistory']);
 });
