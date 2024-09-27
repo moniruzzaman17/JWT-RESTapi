@@ -20,6 +20,7 @@ class AuthController extends Controller
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => bcrypt($validatedData['password']),
+            'is_admin' => $validatedData['is_admin'] ?? false,
         ]);
 
         // Logged in and generate a JWT token for the newly registered user
@@ -40,7 +41,7 @@ class AuthController extends Controller
         }
 
         // Return an unauthorized error if credentials are invalid
-        return response()->json(['error' => 'Unauthorized'], 401);
+        return response()->json(['error' => 'Invalid Credentials'], 401);
     }
     
     public function me()
