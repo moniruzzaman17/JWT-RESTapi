@@ -6,12 +6,24 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        // Cache key for product listing
+        $cacheKey = 'products_list';
+
+        // if products are in cache
+        $products = Cache::get($cacheKey);
+
+        if (!$products) {
+            $products = Product::all();
+
+            Cache::put($cacheKey, $products, 60 * 60); // 60 minute in seconds
+        }
+
         return response()->json($products);
     }
     
@@ -33,6 +45,10 @@ class ProductController extends Controller
 
         // Create and return the new product
         $product = Product::create($validatedData);
+
+        // Clear the product cache
+        Cache::forget('products_list');
+
         return response()->json($product, 201);
     }
     
@@ -54,6 +70,9 @@ class ProductController extends Controller
     
         // Update the product
         $product->update($validatedData);
+
+        // Clear the product cache
+        Cache::forget('products_list');
     
         return response()->json($product);
     }    
